@@ -6,18 +6,15 @@ const Form = () => {
     const [duration, setDuration] = useState('15');
     const [numberOfReels, setNumberOfReels] = useState('1');
     const [reels, setReels] = useState([]);
-    const [loading, setLoading] = useState(false); // Loading state
+    const [loading, setLoading] = useState(false);
 
-    const API_BASE_URL = 'http://localhost:5000/api'; // Replace with your Vercel backend URL
-
-
-    
+    const API_BASE_URL = 'http://localhost:5000/api';
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true); // Set loading to true
         try {
-            await axios.post(`${API_BASE_URL}/generate-reels`, {
+            const response = await axios.post(`${API_BASE_URL}/generate-reels`, {
                 url,
                 duration: parseInt(duration),
                 numberOfReels: parseInt(numberOfReels),
@@ -26,7 +23,8 @@ const Form = () => {
         } catch (error) {
             console.error('Error generating reels:', error);
         }
-        setLoading(false); // Set loading to false
+        setLoading(false);
+        
     };
 
     const fetchReels = async () => {
@@ -44,7 +42,7 @@ const Form = () => {
 
     return (
         <div className="animated-bg min-h-screen flex items-center justify-center">
-            <div className="bg-white p-8 rounded shadow-md w-full max-w-lg">
+            <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-lg">
                 <h1 className="text-2xl font-bold mb-6 text-center">ReelGen</h1>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
@@ -54,7 +52,7 @@ const Form = () => {
                             value={url}
                             onChange={(e) => setUrl(e.target.value)}
                             required
-                            disabled={loading} // Disable input while loading
+                            disabled={loading}
                             className="w-full p-2 border border-gray-300 rounded"
                         />
                     </div>
@@ -63,7 +61,7 @@ const Form = () => {
                         <select
                             value={duration}
                             onChange={(e) => setDuration(e.target.value)}
-                            disabled={loading} // Disable input while loading
+                            disabled={loading}
                             className="w-full p-2 border border-gray-300 rounded"
                         >
                             <option value="15">15 seconds</option>
@@ -79,14 +77,14 @@ const Form = () => {
                             onChange={(e) => setNumberOfReels(e.target.value)}
                             min="1"
                             required
-                            disabled={loading} // Disable input while loading
+                            disabled={loading}
                             className="w-full p-2 border border-gray-300 rounded"
                         />
                     </div>
                     <button
                         type="submit"
                         className={`w-full py-2 rounded ${loading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'} text-white`}
-                        disabled={loading} // Disable button while loading
+                        disabled={loading}
                     >
                         {loading ? (
                             <svg
@@ -97,7 +95,7 @@ const Form = () => {
                                 stroke="currentColor"
                             >
                                 <circle cx="12" cy="12" r="10" strokeWidth="4"></circle>
-                                <path d="M12 2v4m6.36 1.64l-2.83 2.83M18 12h-4m-1.64 6.36l-2.83-2.83M12 22v-4m-6.36-1.64l2.83-2.83M6 12H2m1.64-6.36l2.83 2.83" strokeWidth="4"></path>
+                                <path d="M12 2v4m6.36 1.64l-2.83 2.83M18 12h-4m-1.64 6.36l-2.83-2.83M12 22v-4m-6.36-1.64l2.83-2.83" strokeWidth="4"></path>
                             </svg>
                         ) : (
                             'Generate Reels'
@@ -112,7 +110,7 @@ const Form = () => {
                             {reels.map((reel, index) => (
                                 <li key={index}>
                                     <a
-                                        href={`${API_BASE_URL}/download-reel/${reel.reel_filename}`}
+                                        href={`${API_BASE_URL}/download-reel/${reel.reel_filenames[index]}`}
                                         download
                                         className="block w-full text-center bg-green-500 text-white py-2 rounded hover:bg-green-600"
                                     >
