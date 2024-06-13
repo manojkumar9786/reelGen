@@ -6,28 +6,32 @@ const Form = () => {
     const [duration, setDuration] = useState('15');
     const [numberOfReels, setNumberOfReels] = useState('1');
     const [reels, setReels] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false); // Loading state
+
+    const API_BASE_URL = 'http://localhost:5000/api'; // Replace with your Vercel backend URL
+
+
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
+        setLoading(true); // Set loading to true
         try {
-            await axios.post('http://localhost:5000/api/generate-reels', {
+            await axios.post(`${API_BASE_URL}/generate-reels`, {
                 url,
                 duration: parseInt(duration),
                 numberOfReels: parseInt(numberOfReels),
             });
-            fetchReels();
+            fetchReels(); // Fetch the updated list of reels
         } catch (error) {
             console.error('Error generating reels:', error);
         }
-        setLoading(false);
-        setUrl('')
+        setLoading(false); // Set loading to false
     };
 
     const fetchReels = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/reels');
+            const response = await axios.get(`${API_BASE_URL}/reels`);
             setReels(response.data);
         } catch (error) {
             console.error('Error fetching reels:', error);
@@ -40,7 +44,7 @@ const Form = () => {
 
     return (
         <div className="animated-bg min-h-screen flex items-center justify-center">
-            <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-lg">
+            <div className="bg-white p-8 rounded shadow-md w-full max-w-lg">
                 <h1 className="text-2xl font-bold mb-6 text-center">ReelGen</h1>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
@@ -50,7 +54,7 @@ const Form = () => {
                             value={url}
                             onChange={(e) => setUrl(e.target.value)}
                             required
-                            disabled={loading}
+                            disabled={loading} // Disable input while loading
                             className="w-full p-2 border border-gray-300 rounded"
                         />
                     </div>
@@ -59,7 +63,7 @@ const Form = () => {
                         <select
                             value={duration}
                             onChange={(e) => setDuration(e.target.value)}
-                            disabled={loading}
+                            disabled={loading} // Disable input while loading
                             className="w-full p-2 border border-gray-300 rounded"
                         >
                             <option value="15">15 seconds</option>
@@ -75,14 +79,14 @@ const Form = () => {
                             onChange={(e) => setNumberOfReels(e.target.value)}
                             min="1"
                             required
-                            disabled={loading}
+                            disabled={loading} // Disable input while loading
                             className="w-full p-2 border border-gray-300 rounded"
                         />
                     </div>
                     <button
                         type="submit"
-                        className={`w-full py-2 rounded ${loading ? 'bg-gray-400 cursor-default' : 'bg-blue-500 hover:bg-blue-600'} text-white`}
-                        disabled={loading}
+                        className={`w-full py-2 rounded ${loading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'} text-white`}
+                        disabled={loading} // Disable button while loading
                     >
                         {loading ? (
                             <svg
@@ -108,7 +112,7 @@ const Form = () => {
                             {reels.map((reel, index) => (
                                 <li key={index}>
                                     <a
-                                        href={`http://localhost:5000/api/download-reel/${reel.reel_filename}`}
+                                        href={`${API_BASE_URL}/download-reel/${reel.reel_filename}`}
                                         download
                                         className="block w-full text-center bg-green-500 text-white py-2 rounded hover:bg-green-600"
                                     >
